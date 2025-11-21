@@ -1,61 +1,37 @@
-# 🚀 GitHub Pages 部署步骤（详细版）
+# 🚀 GitHub Pages 部署步骤指南
+
+本指南将帮助你一步步将项目部署到 GitHub Pages，实现和本地 `http://localhost:3000/#showcase` 一样的效果。
 
 ## ✅ 已完成的配置
 
-我已经为你完成了以下配置：
-
-1. ✅ **vite.config.ts** - 已设置 `base: '/terrasense/'`
-2. ✅ **package.json** - 已添加 `homepage` 和 `deploy` 脚本
-3. ✅ **gh-pages** - 已安装部署工具
+1. ✅ `vite.config.ts` - 已设置 base 路径为 `/terrasense/`
+2. ✅ `package.json` - 已添加 homepage 和 deploy 脚本
+3. ✅ `gh-pages` - 已安装部署工具
 
 ## 📋 部署步骤
 
 ### 步骤 1: 解决 Git 网络连接问题
 
-从你的终端输出看，遇到了代理连接问题。有两种解决方案：
+从终端输出看，你遇到了代理连接问题。让我们先解决这个问题：
 
-#### 方案 A: 配置 Git 代理（如果你使用代理）
+#### 方法 A: 取消 Git 代理设置（推荐）
 
 ```bash
-# 如果使用 HTTP 代理
-git config --global http.proxy http://127.0.0.1:1080
-git config --global https.proxy http://127.0.0.1:1080
-
-# 如果不需要代理，取消代理设置
 git config --global --unset http.proxy
 git config --global --unset https.proxy
 ```
 
-#### 方案 B: 使用 SSH 连接（推荐，更稳定）
+#### 方法 B: 如果方法 A 不行，检查并配置正确的代理
 
-1. **检查是否已有 SSH 密钥**
-   ```bash
-   ls ~/.ssh/id_rsa.pub
-   ```
+```bash
+# 查看当前代理设置
+git config --global --get http.proxy
+git config --global --get https.proxy
 
-2. **如果没有，生成 SSH 密钥**
-   ```bash
-   ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-   # 按 Enter 使用默认路径，可以设置密码或留空
-   ```
-
-3. **复制公钥内容**
-   ```bash
-   cat ~/.ssh/id_rsa.pub
-   # 复制输出的内容
-   ```
-
-4. **在 GitHub 添加 SSH 密钥**
-   - 访问：https://github.com/settings/keys
-   - 点击 "New SSH key"
-   - Title: 填写描述（如 "My PC"）
-   - Key: 粘贴刚才复制的公钥
-   - 点击 "Add SSH key"
-
-5. **更改远程仓库地址为 SSH**
-   ```bash
-   git remote set-url origin git@github.com:QinghuaZhang1/terrasense.git
-   ```
+# 如果需要设置代理（根据你的实际情况）
+# git config --global http.proxy http://127.0.0.1:1080
+# git config --global https.proxy http://127.0.0.1:1080
+```
 
 ### 步骤 2: 提交配置更改
 
@@ -65,102 +41,64 @@ git add vite.config.ts package.json package-lock.json
 
 # 提交更改
 git commit -m "Configure GitHub Pages deployment"
+```
 
-# 推送到 GitHub
+### 步骤 3: 推送到 GitHub
+
+```bash
+# 推送到 GitHub（如果之前失败，现在再试一次）
 git push -u origin main
 ```
 
-如果遇到网络问题，可以：
-- 使用 SSH 方式（见步骤 1 方案 B）
-- 或稍后重试
-- 或使用 GitHub Desktop 客户端
+**如果仍然遇到连接问题，可以尝试：**
 
-### 步骤 3: 构建并部署到 GitHub Pages
+1. **使用 SSH 方式**（需要先配置 SSH key）：
+   ```bash
+   git remote set-url origin git@github.com:QinghuaZhang1/terrasense.git
+   git push -u origin main
+   ```
 
-有两种部署方式：
+2. **或者使用 GitHub Desktop**（图形界面工具）
 
-#### 方式 1: 使用 npm 脚本（推荐，简单）
+### 步骤 4: 在 GitHub 上启用 Pages
+
+1. 打开浏览器，访问：https://github.com/QinghuaZhang1/terrasense
+2. 点击仓库顶部的 **Settings**（设置）
+3. 在左侧菜单中找到 **Pages**（页面）
+4. 在 "Source" 下选择：
+   - **Branch**: `gh-pages`
+   - **Folder**: `/ (root)`
+5. 点击 **Save**（保存）
+
+### 步骤 5: 部署到 GitHub Pages
+
+回到终端，运行部署命令：
 
 ```bash
 npm run deploy
 ```
 
 这个命令会：
-1. 构建生产版本（`npm run build`）
-2. 自动部署到 `gh-pages` 分支
+1. 构建项目（`npm run build`）
+2. 将构建产物推送到 `gh-pages` 分支
+3. GitHub 会自动部署到 Pages
 
-#### 方式 2: 使用 GitHub Actions（自动化，已配置）
+### 步骤 6: 等待部署完成
 
-如果你已经推送了代码，GitHub Actions 会自动部署。
+1. 部署通常需要 1-2 分钟
+2. 在 GitHub 仓库页面，点击 **Settings** > **Pages**
+3. 你会看到部署状态和网站地址
 
-### 步骤 4: 在 GitHub 上配置 Pages
-
-1. **访问你的仓库**
-   - 打开：https://github.com/QinghuaZhang1/terrasense
-
-2. **进入 Settings**
-   - 点击仓库顶部的 "Settings" 标签
-
-3. **配置 Pages**
-   - 在左侧菜单找到 "Pages"
-   - 在 "Source" 部分：
-     - 如果使用 `npm run deploy`：选择 "Deploy from a branch"
-     - Branch: 选择 `gh-pages`
-     - Folder: 选择 `/ (root)`
-     - 点击 "Save"
-   
-   - 如果使用 GitHub Actions：选择 "GitHub Actions"
-
-4. **等待部署完成**
-   - 通常需要 1-2 分钟
-   - 可以在 "Actions" 标签页查看部署进度
-
-### 步骤 5: 访问你的网站
+### 步骤 7: 访问你的网站
 
 部署完成后，你的网站地址将是：
-```
-https://QinghuaZhang1.github.io/terrasense/
-```
+**https://QinghuaZhang1.github.io/terrasense**
 
-或者：
-```
-https://QinghuaZhang1.github.io/terrasense/#showcase
-```
+访问 `https://QinghuaZhang1.github.io/terrasense/#showcase` 就能看到和本地一样的效果！
 
-## 🔧 常见问题解决
+## 🔄 后续更新
 
-### 问题 1: 页面显示 404
-
-**原因**: base 路径配置不正确
-
-**解决**: 确保 `vite.config.ts` 中的 `base: '/terrasense/'` 与仓库名一致
-
-### 问题 2: 样式或资源加载失败
-
-**原因**: 路径问题
-
-**解决**: 
-1. 检查浏览器控制台的错误信息
-2. 确保所有资源路径都是相对路径
-3. 重新构建：`npm run build` 然后 `npm run deploy`
-
-### 问题 3: Git 推送失败
-
-**解决**: 
-- 使用 SSH 方式（见步骤 1 方案 B）
-- 或使用 GitHub Desktop 客户端
-- 或检查网络连接
-
-### 问题 4: 部署后页面空白
-
-**解决**:
-1. 检查浏览器控制台错误
-2. 确保 `index.html` 中的资源路径正确
-3. 查看 GitHub Actions 日志（如果有错误）
-
-## 📝 后续更新
-
-每次更新代码后，只需：
+每次修改代码后，只需：
 
 ```bash
 # 1. 提交更改
@@ -172,22 +110,34 @@ git push origin main
 npm run deploy
 ```
 
-或者，如果使用 GitHub Actions，推送代码后会自动部署。
+## ⚠️ 注意事项
 
-## ✅ 验证清单
+1. **API Key 问题**：
+   - GitHub Pages 是静态网站，无法使用服务端环境变量
+   - 交互式演示功能需要 API Key，但不会在 GitHub Pages 上暴露
+   - 用户可以在页面上手动输入 API Key 使用
 
-部署完成后，检查：
+2. **首次部署可能需要几分钟**：
+   - GitHub 需要时间构建和部署
+   - 刷新页面查看最新状态
 
-- [ ] 网站可以正常访问
-- [ ] 所有页面样式正常显示
-- [ ] 导航链接正常工作
-- [ ] 图片和资源正常加载
-- [ ] 交互功能正常（如果配置了 API Key）
+3. **如果部署失败**：
+   - 检查 GitHub Actions 日志（如果有）
+   - 确认 `gh-pages` 分支已创建
+   - 检查 `vite.config.ts` 中的 base 路径是否正确
+
+## 🐛 常见问题
+
+### Q: 部署后页面显示 404？
+A: 检查 `vite.config.ts` 中的 `base` 路径是否与仓库名一致
+
+### Q: 样式丢失或资源加载失败？
+A: 确保所有资源路径都是相对路径，base 配置正确
+
+### Q: 如何更新网站内容？
+A: 修改代码后，运行 `npm run deploy` 重新部署
 
 ---
 
-**需要帮助？** 如果遇到问题，请查看：
-- GitHub Actions 日志（仓库的 Actions 标签）
-- 浏览器控制台错误信息
-- 网络请求是否成功
+完成以上步骤后，你的网站就可以在 GitHub Pages 上访问了！🎉
 
