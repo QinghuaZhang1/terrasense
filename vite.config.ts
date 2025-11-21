@@ -6,6 +6,8 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
       // GitHub Pages 部署需要设置 base 路径
+      // 如果仓库名是 terrasense，则 base: '/terrasense/'
+      // 如果部署到其他仓库，请修改为对应的仓库名
       base: '/terrasense/',
       server: {
         port: 3000,

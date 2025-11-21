@@ -1,214 +1,220 @@
-# 🚀 GitHub Pages 部署完整步骤
+# 📋 部署步骤清单（一步一步）
 
-本指南将一步一步帮你将项目部署到 GitHub Pages，实现和本地 `http://localhost:3000` 一样的效果。
+这是为 **QinghuaZhang1/terrasense** 仓库准备的详细部署步骤。
 
-**你的仓库地址**: https://github.com/QinghuaZhang1/terrasense
+## ✅ 步骤 1: 确认当前配置
 
----
+当前项目已配置为：
+- **仓库名**: `terrasense`
+- **GitHub 用户名**: `QinghuaZhang1`
+- **部署地址**: `https://qinghuazhang1.github.io/terrasense`
 
-## ✅ 步骤 1: 更新配置文件（已完成）
+## ✅ 步骤 2: 检查并提交代码
 
-我已经为你更新了：
-- ✅ `vite.config.ts` - 设置了 `base: '/terrasense/'`
-- ✅ `package.json` - 添加了 `homepage` 和 `deploy` 脚本
-
----
-
-## 🔧 步骤 2: 解决网络连接问题
-
-从你的终端输出看，遇到了代理连接问题。我们有几个解决方案：
-
-### 方案 A: 使用 SSH 连接（推荐）
-
-1. **检查是否已有 SSH 密钥**
-   ```bash
-   ls ~/.ssh
-   ```
-   如果看到 `id_rsa` 或 `id_ed25519`，说明已有密钥。
-
-2. **如果没有，生成 SSH 密钥**
-   ```bash
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-   按 Enter 使用默认设置（不要设置密码，直接按 Enter）
-
-3. **复制公钥**
-   ```bash
-   cat ~/.ssh/id_ed25519.pub
-   ```
-   复制输出的内容
-
-4. **添加到 GitHub**
-   - 访问：https://github.com/settings/keys
-   - 点击 "New SSH key"
-   - 粘贴公钥内容
-   - 保存
-
-5. **更改 remote 为 SSH**
-   ```bash
-   git remote set-url origin git@github.com:QinghuaZhang1/terrasense.git
-   ```
-
-### 方案 B: 配置 Git 代理（如果使用代理）
-
-如果你使用代理，需要配置：
+在终端中执行：
 
 ```bash
-# 取消代理设置（如果不需要）
-git config --global --unset http.proxy
-git config --global --unset https.proxy
+# 1. 确认你在项目目录
+cd C:\Users\NRRS_User01\Desktop\github_deploy
 
-# 或者设置正确的代理地址
-git config --global http.proxy http://127.0.0.1:你的代理端口
-git config --global https.proxy http://127.0.0.1:你的代理端口
-```
+# 2. 检查 Git 状态
+git status
 
-### 方案 C: 使用 GitHub Desktop（最简单）
+# 3. 添加所有更改
+git add .
 
-1. 下载安装 [GitHub Desktop](https://desktop.github.com/)
-2. 登录你的 GitHub 账号
-3. 打开仓库
-4. 点击 "Push origin" 推送代码
-
----
-
-## 📤 步骤 3: 提交并推送代码
-
-### 3.1 提交配置更改
-
-```bash
-git add vite.config.ts package.json
+# 4. 提交更改
 git commit -m "Configure for GitHub Pages deployment"
+
+# 5. 检查远程仓库配置
+git remote -v
 ```
 
-### 3.2 推送代码
+**预期输出**应该显示：
+```
+origin  https://github.com/QinghuaZhang1/terrasense.git (fetch)
+origin  https://github.com/QinghuaZhang1/terrasense.git (push)
+```
 
-**如果使用 HTTPS（需要解决代理问题）：**
+如果显示 `error: remote origin already exists`，说明已经配置好了，可以跳过步骤 3。
+
+## ✅ 步骤 3: 配置远程仓库（如果需要）
+
+如果远程仓库未配置或需要更新：
+
 ```bash
+# 删除旧的远程仓库（如果存在）
+git remote remove origin
+
+# 添加正确的远程仓库
+git remote add origin https://github.com/QinghuaZhang1/terrasense.git
+
+# 验证配置
+git remote -v
+```
+
+## ✅ 步骤 4: 推送代码到 GitHub
+
+```bash
+# 推送到 main 分支
 git push -u origin main
 ```
 
-**如果使用 SSH（推荐）：**
-```bash
-git remote set-url origin git@github.com:QinghuaZhang1/terrasense.git
-git push -u origin main
-```
+**如果遇到网络问题**（如代理错误）：
+- 可以稍后重试
+- 或使用 SSH 方式（需要配置 SSH key）
 
----
+## ✅ 步骤 5: 在 GitHub 上启用 Pages
 
-## 🌐 步骤 4: 配置 GitHub Pages
+### 5.1 打开仓库设置
 
-### 方法 1: 使用 GitHub Actions（推荐，已配置）
+1. 访问: https://github.com/QinghuaZhang1/terrasense
+2. 点击仓库页面顶部的 **"Settings"** 标签
 
-1. 打开浏览器，访问：https://github.com/QinghuaZhang1/terrasense
-2. 点击 **Settings**（设置）
-3. 在左侧菜单找到 **Pages**
-4. 在 "Source" 部分，选择 **"GitHub Actions"**
-5. 保存设置
+### 5.2 配置 Pages
 
-### 方法 2: 使用 gh-pages 手动部署
+1. 在左侧菜单中找到并点击 **"Pages"**
+2. 在 "Source" 部分：
+   - 选择 **"GitHub Actions"**（不是 "Deploy from a branch"）
+3. 页面会自动保存
 
-1. **安装 gh-pages**
-   ```bash
-   npm install --save-dev gh-pages
-   ```
+### 5.3 验证配置
 
-2. **运行部署命令**
-   ```bash
-   npm run deploy
-   ```
+你应该看到类似这样的提示：
+> "Your site is ready to be published at https://qinghuazhang1.github.io/terrasense"
 
-3. **在 GitHub 设置 Pages**
-   - 访问：https://github.com/QinghuaZhang1/terrasense/settings/pages
-   - Source 选择 **"gh-pages"** 分支
-   - 保存
+## ✅ 步骤 6: 触发首次部署
 
----
+### 方法 A: 通过推送代码（自动触发）
 
-## ✅ 步骤 5: 验证部署
+如果你已经推送了代码，GitHub Actions 会自动开始部署。
 
-部署完成后（通常需要 1-2 分钟），访问：
+### 方法 B: 手动触发
 
-**你的网站地址**: https://qinghuazhang1.github.io/terrasense
+1. 进入仓库的 **"Actions"** 标签页
+2. 在左侧选择 **"Deploy to GitHub Pages"** 工作流
+3. 点击 **"Run workflow"** 按钮
+4. 选择分支（通常是 `main`）
+5. 点击绿色的 **"Run workflow"** 按钮
 
-或者带路径的地址：
-- https://qinghuazhang1.github.io/terrasense/#showcase
-- https://qinghuazhang1.github.io/terrasense/#demo
+## ✅ 步骤 7: 等待部署完成
 
----
+1. 在 **"Actions"** 标签页查看部署进度
+2. 你会看到两个任务：
+   - `build` - 构建项目
+   - `deploy` - 部署到 GitHub Pages
+3. 等待两个任务都显示 ✅（通常需要 2-5 分钟）
 
-## 🔍 故障排除
+## ✅ 步骤 8: 访问你的网站
 
-### 问题 1: 页面显示 404
+部署成功后，访问：
 
-- 检查 `vite.config.ts` 中的 `base` 路径是否正确：`/terrasense/`
-- 确认仓库名是 `terrasense`（小写）
-- 等待几分钟让 GitHub Pages 更新
+- **主页**: https://qinghuazhang1.github.io/terrasense
+- **Showcase 页面**: https://qinghuazhang1.github.io/terrasense/#showcase
+- **Demo 页面**: https://qinghuazhang1.github.io/terrasense/#demo
 
-### 问题 2: 资源加载失败（CSS/JS 404）
-
-- 确认 `base` 路径设置正确
-- 检查浏览器控制台的错误信息
-- 重新构建并部署：`npm run build && npm run deploy`
-
-### 问题 3: 路由不工作（刷新后 404）
-
-如果使用 GitHub Actions，需要添加 `404.html` 重定向。创建 `public/404.html`：
-
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>TerraSense</title>
-    <script>
-      // Single Page Apps for GitHub Pages
-      var pathSegmentsToKeep = 1;
-      var l = window.location;
-      l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-        (l.search ? '&' + l.search.slice(1).replace(/l/g, '%7C') : '') +
-        l.hash
-      );
-    </script>
-  </head>
-  <body>
-  </body>
-</html>
-```
-
----
-
-## 📝 后续更新
+## 🔄 后续更新
 
 每次修改代码后，只需：
 
 ```bash
 git add .
-git commit -m "Update: 描述你的更改"
+git commit -m "Update: your changes"
 git push origin main
 ```
 
-如果使用 GitHub Actions，会自动重新部署。如果使用 gh-pages，运行：
+GitHub Actions 会自动重新部署。
 
+## 🛠️ 部署到其他仓库
+
+如果你想部署到**其他 GitHub 仓库**，按以下步骤：
+
+### 示例：部署到新仓库 `my-terrasense`
+
+1. **在 GitHub 上创建新仓库** `my-terrasense`
+
+2. **修改 vite.config.ts**
+   ```typescript
+   base: '/my-terrasense/',  // 改为新仓库名
+   ```
+
+3. **修改 package.json**
+   ```json
+   "homepage": "https://qinghuazhang1.github.io/my-terrasense"
+   ```
+
+4. **更新远程仓库**
+   ```bash
+   git remote set-url origin https://github.com/QinghuaZhang1/my-terrasense.git
+   git add .
+   git commit -m "Update for new repository"
+   git push origin main
+   ```
+
+5. **在新仓库中启用 Pages**（Settings > Pages > Source: GitHub Actions）
+
+### 示例：部署到不同用户的仓库
+
+假设要部署到 `other-user/terrasense`：
+
+1. **修改 vite.config.ts**
+   ```typescript
+   base: '/terrasense/',  // 仓库名保持不变
+   ```
+
+2. **修改 package.json**
+   ```json
+   "homepage": "https://other-user.github.io/terrasense"
+   ```
+
+3. **添加新的远程仓库**
+   ```bash
+   git remote add other https://github.com/other-user/terrasense.git
+   git push other main
+   ```
+
+4. **在新仓库中启用 Pages**
+
+## ❌ 故障排除
+
+### 问题：推送失败（网络错误）
+
+**解决方案**:
 ```bash
-npm run deploy
+# 检查代理设置
+git config --global http.proxy
+git config --global https.proxy
+
+# 如果需要，清除代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+# 或使用 SSH（需要先配置 SSH key）
+git remote set-url origin git@github.com:QinghuaZhang1/terrasense.git
 ```
 
+### 问题：部署后页面空白
+
+**检查**:
+1. 确认 `vite.config.ts` 中 `base: '/terrasense/'` 正确
+2. 确认 `package.json` 中 `homepage` 正确
+3. 查看浏览器控制台是否有错误
+4. 检查 GitHub Actions 日志
+
+### 问题：资源文件 404
+
+**解决方案**:
+- 确保 `base` 路径以 `/` 开头和结尾
+- 重新构建并推送
+
+## 📞 需要帮助？
+
+如果按照以上步骤仍有问题，请检查：
+1. GitHub Actions 的日志输出
+2. 浏览器控制台的错误信息
+3. 所有配置文件是否正确
+
 ---
 
-## 🎉 完成！
+**祝你部署成功！** 🎉
 
-部署成功后，你的网站就可以通过以下地址访问：
-
-- **主页**: https://qinghuazhang1.github.io/terrasense
-- **展示页**: https://qinghuazhang1.github.io/terrasense/#showcase
-- **演示页**: https://qinghuazhang1.github.io/terrasense/#demo
-
-效果应该和本地 `http://localhost:3000` 完全一样！
-
----
-
-**需要帮助？** 如果遇到任何问题，请告诉我具体的错误信息。
