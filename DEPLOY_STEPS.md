@@ -1,155 +1,214 @@
-# 🚀 GitHub Pages 部署步骤指南
+# 🚀 GitHub Pages 部署完整步骤
 
-本指南将帮助你一步步将 TerraSense 项目部署到 GitHub Pages。
+本指南将一步一步帮你将项目部署到 GitHub Pages，实现和本地 `http://localhost:3000` 一样的效果。
 
-## ✅ 已完成的配置
+**你的仓库地址**: https://github.com/QinghuaZhang1/terrasense
 
-我已经为你完成了以下配置：
-- ✅ 更新了 `vite.config.ts`，设置 base 路径为 `/terrasense/`
-- ✅ 更新了 `package.json`，添加了 homepage 和 deploy 脚本
+---
 
-## 📋 部署步骤
+## ✅ 步骤 1: 更新配置文件（已完成）
 
-### 步骤 1: 安装 gh-pages 依赖
+我已经为你更新了：
+- ✅ `vite.config.ts` - 设置了 `base: '/terrasense/'`
+- ✅ `package.json` - 添加了 `homepage` 和 `deploy` 脚本
 
-在终端中运行：
+---
 
-```bash
-npm install --save-dev gh-pages
-```
+## 🔧 步骤 2: 解决网络连接问题
 
-### 步骤 2: 解决 Git 网络连接问题
+从你的终端输出看，遇到了代理连接问题。我们有几个解决方案：
 
-从你的终端输出看到有网络连接问题。有两种解决方案：
+### 方案 A: 使用 SSH 连接（推荐）
 
-#### 方案 A: 取消 Git 代理设置（推荐）
+1. **检查是否已有 SSH 密钥**
+   ```bash
+   ls ~/.ssh
+   ```
+   如果看到 `id_rsa` 或 `id_ed25519`，说明已有密钥。
 
-```bash
-git config --global --unset http.proxy
-git config --global --unset https.proxy
-```
-
-#### 方案 B: 使用 SSH 连接（如果方案 A 不行）
-
-1. 生成 SSH 密钥（如果还没有）：
+2. **如果没有，生成 SSH 密钥**
    ```bash
    ssh-keygen -t ed25519 -C "your_email@example.com"
    ```
+   按 Enter 使用默认设置（不要设置密码，直接按 Enter）
 
-2. 将公钥添加到 GitHub：
-   - 复制 `C:\Users\NRRS_User01\.ssh\id_ed25519.pub` 的内容
-   - 在 GitHub 上：Settings > SSH and GPG keys > New SSH key
+3. **复制公钥**
+   ```bash
+   cat ~/.ssh/id_ed25519.pub
+   ```
+   复制输出的内容
 
-3. 更改远程仓库地址为 SSH：
+4. **添加到 GitHub**
+   - 访问：https://github.com/settings/keys
+   - 点击 "New SSH key"
+   - 粘贴公钥内容
+   - 保存
+
+5. **更改 remote 为 SSH**
    ```bash
    git remote set-url origin git@github.com:QinghuaZhang1/terrasense.git
    ```
 
-### 步骤 3: 提交配置更改
+### 方案 B: 配置 Git 代理（如果使用代理）
+
+如果你使用代理，需要配置：
 
 ```bash
-git add .
-git commit -m "Configure GitHub Pages deployment"
+# 取消代理设置（如果不需要）
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+
+# 或者设置正确的代理地址
+git config --global http.proxy http://127.0.0.1:你的代理端口
+git config --global https.proxy http://127.0.0.1:你的代理端口
 ```
 
-### 步骤 4: 推送到 GitHub
+### 方案 C: 使用 GitHub Desktop（最简单）
 
-```bash
-git push -u origin main
-```
-
-如果遇到网络问题，可以尝试：
-```bash
-# 使用 SSH（如果已配置）
-git push -u origin main
-
-# 或者设置代理（如果需要）
-git config --global http.proxy http://127.0.0.1:1080
-git config --global https.proxy http://127.0.0.1:1080
-```
-
-### 步骤 5: 构建并部署到 GitHub Pages
-
-运行部署命令：
-
-```bash
-npm run deploy
-```
-
-这个命令会：
-1. 构建生产版本（`npm run build`）
-2. 将 `dist` 目录推送到 `gh-pages` 分支
-
-### 步骤 6: 配置 GitHub Pages 设置
-
-1. 访问你的仓库：https://github.com/QinghuaZhang1/terrasense
-2. 点击 **Settings**（设置）
-3. 在左侧菜单找到 **Pages**
-4. 在 "Source" 下选择：
-   - **Branch**: `gh-pages`
-   - **Folder**: `/ (root)`
-5. 点击 **Save**
-
-### 步骤 7: 等待部署完成
-
-- GitHub 通常需要 1-2 分钟来部署
-- 部署完成后，访问：**https://QinghuaZhang1.github.io/terrasense**
-
-## 🎯 验证部署
-
-部署成功后，你应该能够：
-
-1. ✅ 访问主页：https://QinghuaZhang1.github.io/terrasense
-2. ✅ 点击导航栏的 "Capabilities" 链接，应该跳转到 `#showcase` 部分
-3. ✅ 所有页面功能与本地 `http://localhost:3000` 一致
-
-## 🔄 更新部署
-
-以后每次修改代码后，只需运行：
-
-```bash
-git add .
-git commit -m "你的提交信息"
-git push origin main
-npm run deploy
-```
-
-## ⚠️ 注意事项
-
-1. **API Key**: GitHub Pages 是静态托管，无法使用服务端环境变量。如果需要使用交互式演示功能：
-   - 用户需要在页面上手动输入 API Key
-   - 或者考虑使用 Vercel/Netlify 等支持环境变量的平台
-
-2. **路由问题**: 项目使用了锚点链接（`#showcase`），这些在 GitHub Pages 上可以正常工作。
-
-3. **资源路径**: 所有资源路径已自动配置为相对路径，无需额外修改。
-
-## 🐛 常见问题
-
-### 问题 1: 部署后页面空白
-
-**解决方案**: 检查 `vite.config.ts` 中的 `base` 路径是否正确设置为 `/terrasense/`
-
-### 问题 2: 样式或资源加载失败
-
-**解决方案**: 
-- 确保构建成功：`npm run build`
-- 检查 `dist` 目录中的文件是否完整
-
-### 问题 3: 404 错误
-
-**解决方案**: 
-- 确保 GitHub Pages 设置中选择了 `gh-pages` 分支
-- 等待几分钟让 GitHub 完成部署
-
-## 📞 需要帮助？
-
-如果遇到问题，可以：
-- 检查 GitHub Actions 中的部署日志
-- 查看浏览器控制台的错误信息
-- 确认所有步骤都已正确执行
+1. 下载安装 [GitHub Desktop](https://desktop.github.com/)
+2. 登录你的 GitHub 账号
+3. 打开仓库
+4. 点击 "Push origin" 推送代码
 
 ---
 
-**祝你部署顺利！** 🎉
+## 📤 步骤 3: 提交并推送代码
 
+### 3.1 提交配置更改
+
+```bash
+git add vite.config.ts package.json
+git commit -m "Configure for GitHub Pages deployment"
+```
+
+### 3.2 推送代码
+
+**如果使用 HTTPS（需要解决代理问题）：**
+```bash
+git push -u origin main
+```
+
+**如果使用 SSH（推荐）：**
+```bash
+git remote set-url origin git@github.com:QinghuaZhang1/terrasense.git
+git push -u origin main
+```
+
+---
+
+## 🌐 步骤 4: 配置 GitHub Pages
+
+### 方法 1: 使用 GitHub Actions（推荐，已配置）
+
+1. 打开浏览器，访问：https://github.com/QinghuaZhang1/terrasense
+2. 点击 **Settings**（设置）
+3. 在左侧菜单找到 **Pages**
+4. 在 "Source" 部分，选择 **"GitHub Actions"**
+5. 保存设置
+
+### 方法 2: 使用 gh-pages 手动部署
+
+1. **安装 gh-pages**
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+
+2. **运行部署命令**
+   ```bash
+   npm run deploy
+   ```
+
+3. **在 GitHub 设置 Pages**
+   - 访问：https://github.com/QinghuaZhang1/terrasense/settings/pages
+   - Source 选择 **"gh-pages"** 分支
+   - 保存
+
+---
+
+## ✅ 步骤 5: 验证部署
+
+部署完成后（通常需要 1-2 分钟），访问：
+
+**你的网站地址**: https://qinghuazhang1.github.io/terrasense
+
+或者带路径的地址：
+- https://qinghuazhang1.github.io/terrasense/#showcase
+- https://qinghuazhang1.github.io/terrasense/#demo
+
+---
+
+## 🔍 故障排除
+
+### 问题 1: 页面显示 404
+
+- 检查 `vite.config.ts` 中的 `base` 路径是否正确：`/terrasense/`
+- 确认仓库名是 `terrasense`（小写）
+- 等待几分钟让 GitHub Pages 更新
+
+### 问题 2: 资源加载失败（CSS/JS 404）
+
+- 确认 `base` 路径设置正确
+- 检查浏览器控制台的错误信息
+- 重新构建并部署：`npm run build && npm run deploy`
+
+### 问题 3: 路由不工作（刷新后 404）
+
+如果使用 GitHub Actions，需要添加 `404.html` 重定向。创建 `public/404.html`：
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>TerraSense</title>
+    <script>
+      // Single Page Apps for GitHub Pages
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/l/g, '%7C') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
+```
+
+---
+
+## 📝 后续更新
+
+每次修改代码后，只需：
+
+```bash
+git add .
+git commit -m "Update: 描述你的更改"
+git push origin main
+```
+
+如果使用 GitHub Actions，会自动重新部署。如果使用 gh-pages，运行：
+
+```bash
+npm run deploy
+```
+
+---
+
+## 🎉 完成！
+
+部署成功后，你的网站就可以通过以下地址访问：
+
+- **主页**: https://qinghuazhang1.github.io/terrasense
+- **展示页**: https://qinghuazhang1.github.io/terrasense/#showcase
+- **演示页**: https://qinghuazhang1.github.io/terrasense/#demo
+
+效果应该和本地 `http://localhost:3000` 完全一样！
+
+---
+
+**需要帮助？** 如果遇到任何问题，请告诉我具体的错误信息。
